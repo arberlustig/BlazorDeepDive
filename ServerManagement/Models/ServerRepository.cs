@@ -22,8 +22,14 @@ namespace ServerManagement.Models
     new Server { ServerId = 14, Name = "Server14", City = "Halifax"},
     new Server { ServerId = 15, Name = "Server15", City = "Halifax"}
 };
+        public static List<string> cities = new List<string>()
+        {
+            "Toronto",
+            "Washington D.C",
+            "Petsburg"
+        };
 
-
+        public static List<string> GetCities() => cities;
         public static void AddServer(Server server)
         {
             var maxId = servers.Max(s => s.ServerId);
@@ -61,7 +67,7 @@ namespace ServerManagement.Models
         public static void DeleteServer(int serverId)
         {
             var server = GetServerById(serverId);
-            if(server is not null)
+            if (server is not null)
             {
                 servers.Remove(server);
             }

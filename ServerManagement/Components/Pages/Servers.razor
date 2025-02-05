@@ -4,11 +4,33 @@
 <br />
 <br />
 
- 
+@foreach(var city in cities)
+{
+    <img src=@($"/images/{@city}.png")/>
+    <br />
+    <button class="btn btn-primary">
+        @city
+    </button>
+}
+
+<br />
+<ul>
+    @foreach(var iwas in servers)
+    {
+        <li>
+            @iwas.Name in @iwas.City is @(iwas.IsOnline?"online":"offline")
+        </li>
+        <a href="/addedserver/@(iwas.ServerId)">Klick um zu Added Server zu kommen</a>
+    }
+
+</ul> 
 
 
 
 
 @code {
     private List<Server> servers = ServerRepository.GetServersByCity("Toronto");
+    private List<string> cities = ServerRepository.GetCities();
+
+
 }
