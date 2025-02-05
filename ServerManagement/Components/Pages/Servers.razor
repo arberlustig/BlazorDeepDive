@@ -1,0 +1,14 @@
+﻿@page "/servers"
+
+<h3>Servers</h3>
+<br />
+<br />
+
+
+
+
+
+
+@code {
+    private List<Server> servers = ServerRepository.GetServersByCity("Toronto");
+}
