@@ -1,12 +1,42 @@
-﻿<h3>AddServer</h3>
+﻿@page "/servers/addserver"
+@inject NavigationManager navi;
 
+<h3>AddServer</h3>
+<EditForm Model="server" FormName="AddServer" OnValidSubmit="Submit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="mb-3">
+        <label class="form-label">Name des Servers</label>
+        <InputText class="form-control" placeholder="ServerXY" @bind-value="server.Name"></InputText>
+    </div>
 
-
+    <div class="mb-3">
+        <label class="form-label">Ort des Servers</label>
+        <InputText class="form-control" placeholder="Toronto" @bind-value="server.City"></InputText>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Ist der Server online? Falls ja, anklicken</label>
+        <InputCheckbox @bind-value="server.IsOnline"></InputCheckbox>
+    </div>
+    
+    <button type="submit" class="btn btn-success">Hinzufügen</button>
+</EditForm>
 
 
 
 
 
 @code {
+    [SupplyParameterFromForm(FormName = "AddServer")]
+    private Server server { get; set; } = new Server() { IsOnline = false};
+    List<Server> allServerWithToronto = ServerRepository.GetServersByCity("Toronto").ToList();
+
+    public async Task Submit()
+    {
+        if (server is not null)
+            ServerRepository.AddServer(server);
+
+        navi.NavigateTo("/servers");
+    }
 
 }

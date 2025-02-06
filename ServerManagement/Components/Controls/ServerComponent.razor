@@ -1,10 +1,29 @@
-﻿<p style="color:@(server.IsOnline?"green":"red")">
-   @server.Name is in @server.City that is @(server.IsOnline?"online":"offline")
-</p>
+﻿@if (server != null)
+{
+
+    <p style="color:@(server.IsOnline?"green":"red")">
+        @server.Name is in @server.City that is @(server.IsOnline ? "online" : "offline")
+        <button type="button" @onclick="ChangeStatus" class="btn btn-primary">An/Ausschalten</button>
+    </p>
+}
+
+
+
 @code {
-    private Server server = new Server
+    [SupplyParameterFromForm]
+    private Server server { get; set; } =
+    new Server
         {
             Name = "Server 1",
             City = "Toronto"
         };
+
+    public void ChangeStatus()
+    {
+        if(server != null)
+        {
+            server.IsOnline = !server.IsOnline;
+        }
+    }
+
 }

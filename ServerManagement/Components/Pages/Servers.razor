@@ -1,36 +1,58 @@
 ﻿@page "/servers"
 
+ @inject NavigationManager navi;
+
+<ServerComponent></ServerComponent>
+
+
 <h3>Servers</h3>
 <br />
 <br />
-
-@foreach(var city in cities)
-{
-    <img src=@($"/images/{@city}.png")/>
-    <br />
-    <button class="btn btn-primary">
-        @city
-    </button>
-}
-
-<br />
 <ul>
-    @foreach(var iwas in servers)
+    @foreach (var iwas in servers)
     {
         <li>
-            @iwas.Name in @iwas.City is @(iwas.IsOnline?"online":"offline")
+            @iwas.Name in @iwas.City is @(iwas.IsOnline ? "online" : "offline")
+
+            <a href="/addedserver/@(iwas.ServerId)">Klick um zu Added Server zu kommen</a>
+            @* 
+            <button type="button" @onclick="@(()=>DeleteServer(iwas.ServerId))" class="btn btn-danger">
+                Löschen
+            </button> *@
+
+
+            <EditForm Model="iwas"
+            FormName="@($"form-server-{iwas.ServerId}")"
+            OnValidSubmit="@(()=>{ DeleteServer(iwas.ServerId); })">
+                <button type="submit" class="btn btn-danger">
+                    Löschen
+                </button>
+            </EditForm>
+
         </li>
-        <a href="/addedserver/@(iwas.ServerId)">Klick um zu Added Server zu kommen</a>
     }
 
-</ul> 
+</ul>
 
+
+
+<a href="/servers/addserver">Add server to the List!</a>
 
 
 
 @code {
     private List<Server> servers = ServerRepository.GetServersByCity("Toronto");
-    private List<string> cities = ServerRepository.GetCities();
+    // private List<string> cities = ServerRepository.GetCities();
 
+    public void DeleteServer(int serverId)
+    {
+        if (serverId > 0)
+        {
+            ServerRepository.DeleteServer(serverId);
+            servers = ServerRepository.GetServersByCity("Toronto"); //nochmal die angezeigte Liste aktualisieren,
+            //bisschen blöd, weil eig war gedacht dass es von alleine das checkt
+        
+        }
+    }
 
 }
