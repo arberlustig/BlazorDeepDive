@@ -2,7 +2,7 @@
 @inject NavigationManager navi;
 
 <h3>AddServer</h3>
-<EditForm Model="server" FormName="AddServer" OnValidSubmit="Submit">
+<EditForm Model="server" OnValidSubmit="Submit">
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>
     <div class="mb-3">
@@ -27,7 +27,7 @@
 
 
 @code {
-    [SupplyParameterFromForm(FormName = "AddServer")]
+
     private Server server { get; set; } = new Server() { IsOnline = false};
     List<Server> allServerWithToronto = ServerRepository.GetServersByCity("Toronto").ToList();
 

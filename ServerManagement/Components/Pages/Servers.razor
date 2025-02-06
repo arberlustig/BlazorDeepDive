@@ -8,30 +8,43 @@
 <h3>Servers</h3>
 <br />
 <br />
-<ul>
-    @foreach (var iwas in servers)
+
+<div class="row">
+    @foreach (var city in cities)
     {
+        <div class="col-md-1">
+            <div class="card @((selectedCity.Equals(city)?"border-primary":""))">
+                <img src="@($"/images/{city}.png")" class="card-img-top" alt="picture">
+                <div class="card-body">
+                    <button type="button" @onclick="@(() => { SelectCity(city); } )">@city</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Search Servers" @bind-value="serverFilter" @bind-value:event="oninput" />
+    <button class="btn btn-outline-secondary" type="button" @onclick="HandleSearch" id="button-search">Search</button>
+</div>
+
+<ul>
+    <Virtualize Items="servers" Context="iwas">
         <li>
             @iwas.Name in @iwas.City is @(iwas.IsOnline ? "online" : "offline")
 
             <a href="/addedserver/@(iwas.ServerId)">Klick um zu Added Server zu kommen</a>
-            @* 
-            <button type="button" @onclick="@(()=>DeleteServer(iwas.ServerId))" class="btn btn-danger">
-                Löschen
-            </button> *@
-
 
             <EditForm Model="iwas"
-            FormName="@($"form-server-{iwas.ServerId}")"
-            OnValidSubmit="@(()=>{ DeleteServer(iwas.ServerId); })">
+                      FormName="@($"form-server-{iwas.ServerId}")"
+                      OnValidSubmit="@(()=>{ DeleteServer(iwas.ServerId); })">
                 <button type="submit" class="btn btn-danger">
                     Löschen
                 </button>
             </EditForm>
 
         </li>
-    }
-
+    </Virtualize>
 </ul>
 
 
@@ -39,10 +52,11 @@
 <a href="/servers/addserver">Add server to the List!</a>
 
 
-
 @code {
     private List<Server> servers = ServerRepository.GetServersByCity("Toronto");
-    // private List<string> cities = ServerRepository.GetCities();
+    private List<string> cities = ServerRepository.GetCities();
+    private string selectedCity = "Toronto";
+    private string serverFilter = "";
 
     public void DeleteServer(int serverId)
     {
@@ -50,9 +64,22 @@
         {
             ServerRepository.DeleteServer(serverId);
             servers = ServerRepository.GetServersByCity("Toronto"); //nochmal die angezeigte Liste aktualisieren,
-            //bisschen blöd, weil eig war gedacht dass es von alleine das checkt
-        
+                                                                    //bisschen blöd, weil eig war gedacht dass es von alleine das checkt
+
         }
     }
+
+    public void SelectCity(string city)
+    {
+        selectedCity = city;
+        servers = ServerRepository.GetServersByCity(city);
+    }
+
+    public void HandleSearch()
+    {
+        this.servers = ServerRepository.SearchServers(serverFilter);
+        this.selectedCity = string.Empty;
+    }
+
 
 }

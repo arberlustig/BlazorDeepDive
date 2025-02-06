@@ -11,8 +11,8 @@ namespace ServerManagement.Models
     new Server { ServerId = 3, Name = "Server3", City = "Toronto"},
     new Server { ServerId = 4, Name = "Server4", City = "Toronto"},
     new Server { ServerId = 5, Name = "Server5", City = "Toronto"},
-    new Server { ServerId = 6, Name = "Server6", City = "Montreal"},
-    new Server { ServerId = 7, Name = "Server7", City = "Montreal"},
+    new Server { ServerId = 6, Name = "Server6", City = "montreal"},
+    new Server { ServerId = 7, Name = "Server7", City = "montreal"},
     new Server { ServerId = 8, Name = "Server8", City = "Montreal"},
     new Server { ServerId = 9, Name = "Server9", City = "Montreal"},
     new Server { ServerId = 10, Name = "Server10", City = "Ottawa"},
@@ -25,8 +25,10 @@ namespace ServerManagement.Models
         public static List<string> cities = new List<string>()
         {
             "Toronto",
-            "Washington D.C",
-            "Petsburg"
+            "Halifax",
+            "montreal",
+            "Ottawa",
+            "Calgary"
         };
 
         public static List<string> GetCities() => cities;
