@@ -1,29 +1,59 @@
-﻿@if (server != null)
-{
+﻿<li @key="server.ServerId" style="background-color: @GetBackgroundColor()">
+    @server.Name in @server.City is @(server.IsOnline ? "online" : "offline")
 
-    <p style="color:@(server.IsOnline?"green":"red")">
-        @server.Name is in @server.City that is @(server.IsOnline ? "online" : "offline")
-        <button type="button" @onclick="ChangeStatus" class="btn btn-primary">An/Ausschalten</button>
-    </p>
-}
+    <a href="/addedserver/@(server.ServerId)">Klick um zu Added Server zu kommen</a>
 
+ 
+    <button
+        @onclick="() => { DeleteServer(server.ServerId);}"
+            type="submit" 
+            class="btn btn-danger">
+            Löschen
+        </button>
+
+</li>
 
 
 @code {
-    [Parameter]
-    private Server server { get; set; } =
-    new Server
-        {
-            Name = "Server 1",
-            City = "Toronto"
-        };
+        [Parameter]
+        public Server server { get; set; }
 
-    public void ChangeStatus()
-    {
-        if(server != null)
+        [CascadingParameter(Name = "SelectedCity")]
+        public string SelectedCity { get; set; }
+
+        public void DeleteServer(int serverId)
         {
-            server.IsOnline = !server.IsOnline;
+            // if (serverId > 0)
+            // {
+            //     ServerRepository.DeleteServer(serverId);
+            //     servers = ServerRepository.GetServersByCity("Toronto"); 
+            // }
         }
-    }
+
+        public string GetBackgroundColor()
+        {
+            if (SelectedCity != null)
+            {
+                switch (SelectedCity)
+                {
+                    case "Toronto":
+                        return "lightblue";
+                        case "montreal":
+                        return "lightgreen";
+                    case "Ottawa":
+                        return "palegreen";
+                    case "Calgary":
+                        return "pink";
+                        case "Halifax":
+                        return "lightyellow";
+                }
+        }
+        else
+        {
+            return "white";
+        }
+
+            return "";
+        }
 
 }

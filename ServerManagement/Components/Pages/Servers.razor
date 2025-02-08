@@ -1,85 +1,52 @@
 ﻿@page "/servers"
 
- @inject NavigationManager navi;
-
-<ServerComponent></ServerComponent>
-
 
 <h3>Servers</h3>
 <br />
 <br />
 
 <div class="row">
-    @foreach (var city in cities)
-    {
-        <div class="col-md-1">
-            <div class="card @((selectedCity.Equals(city)?"border-primary":""))">
-                <img src="@($"/images/{city}.png")" class="card-img-top" alt="picture">
-                <div class="card-body">
-                    <button type="button" @onclick="@(() => { SelectCity(city); } )">@city</button>
-                </div>
-            </div>
-        </div>
-    }
+    <CityListComponent
+        SelectCityCallback="HandleCitySelection"
+        @ref="cityListComponent"></CityListComponent>
 </div>
 
-<div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Search Servers" @bind-value="serverFilter" @bind-value:event="oninput" />
-    <button class="btn btn-outline-secondary" type="button" @onclick="HandleSearch" id="button-search">Search</button>
-</div>
 
-<ul>
-    <Virtualize Items="servers" Context="iwas">
-        <li>
-            @iwas.Name in @iwas.City is @(iwas.IsOnline ? "online" : "offline")
-
-            <a href="/addedserver/@(iwas.ServerId)">Klick um zu Added Server zu kommen</a>
-
-            <EditForm Model="iwas"
-                      FormName="@($"form-server-{iwas.ServerId}")"
-                      OnValidSubmit="@(()=>{ DeleteServer(iwas.ServerId); })">
-                <button type="submit" class="btn btn-danger">
-                    Löschen
-                </button>
-            </EditForm>
-
-        </li>
-    </Virtualize>
-</ul>
+<CascadingValue Name="SelectedCity" Value="@selectedCity">
+    <ul>
+        <ServerListComponent
+            CityName="@selectedCity"
+            SearchFilter="@searchFilter">
+        </ServerListComponent>
+    </ul>
+</CascadingValue>
 
 
+<SearchbarComponent 
+    SearchCallback="HandleSearchServer"
+    @ref="searchbarComponent"></SearchbarComponent>
 
 <a href="/servers/addserver">Add server to the List!</a>
 
 
 @code {
-    private List<Server> servers = ServerRepository.GetServersByCity("Toronto");
-    private List<string> cities = ServerRepository.GetCities();
     private string selectedCity = "Toronto";
-    private string serverFilter = "";
+    private string searchFilter = "";
 
-    public void DeleteServer(int serverId)
+    private CityListComponent cityListComponent;
+    private SearchbarComponent searchbarComponent;
+
+    private void HandleCitySelection(string city)
     {
-        if (serverId > 0)
-        {
-            ServerRepository.DeleteServer(serverId);
-            servers = ServerRepository.GetServersByCity("Toronto"); //nochmal die angezeigte Liste aktualisieren,
-                                                                    //bisschen blöd, weil eig war gedacht dass es von alleine das checkt
-
-        }
+        this.selectedCity = city;
+        this.searchFilter = "";
+        searchbarComponent.ClearSearch();
     }
 
-    public void SelectCity(string city)
+    private void HandleSearchServer(string searchFilter)
     {
-        selectedCity = city;
-        servers = ServerRepository.GetServersByCity(city);
+        this.searchFilter = searchFilter;
+        cityListComponent.ClearSelection();
     }
-
-    public void HandleSearch()
-    {
-        this.servers = ServerRepository.SearchServers(serverFilter);
-        this.selectedCity = string.Empty;
-    }
-
 
 }

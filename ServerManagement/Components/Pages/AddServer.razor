@@ -5,6 +5,16 @@
 <EditForm Model="server" OnValidSubmit="Submit">
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>
+    
+    <FieldComponent Label="Name">
+        <Control>
+            <InputText class="form-control" placeholder="ServerXY" @bind-value="server.Name"></InputText>
+        </Control>
+        <ValidationControl>
+            <ValidationMessage For="() => server.Name"></ValidationMessage>
+        </ValidationControl>
+    </FieldComponent>
+
     <div class="mb-3">
         <label class="form-label">Name des Servers</label>
         <InputText class="form-control" placeholder="ServerXY" @bind-value="server.Name"></InputText>

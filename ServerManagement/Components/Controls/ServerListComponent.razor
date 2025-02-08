@@ -1,27 +1,32 @@
-﻿@using ServerManagement.Components.Pages
-
-@if (servers.Any())
-{
-    <ul>
-        <Virtualize Items="this.servers" Context="iwas">
-            <ServerComponent ></ServerComponent>
-        </Virtualize>
-    </ul>
-}
-
-<ServerComponent></ServerComponent>
+﻿
+<ul>
+<RepeaterComponent Items="this.servers">
+    <Row Context="server">
+        <ServerComponent server="@server"></ServerComponent>
+    </Row>
+</RepeaterComponent>
+</ul>
 
 
 @code {
+
     [Parameter]
     public string? CityName { get; set; }
 
-    public List<Server>? servers;
+    [Parameter] public string SearchFilter { get; set; } = "";
 
+    public List<Server>? servers { get; set; }
 
     protected override void OnParametersSet()
     {
-        servers = ServerRepository.GetServersByCity(CityName??"Toronto");
+        if (string.IsNullOrWhiteSpace(this.SearchFilter))
+        {
+            servers = ServerRepository.GetServersByCity(CityName);
+        }
+        else
+        {
+            servers = ServerRepository.SearchServers(SearchFilter);
+        }
     }
 
 }
